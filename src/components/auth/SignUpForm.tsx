@@ -1,6 +1,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { Button, Flex, TextField, Text, Heading } from "@radix-ui/themes";
 import { EnvelopeClosedIcon, LockClosedIcon, PersonIcon, ExclamationTriangleIcon, CheckCircledIcon } from "@radix-ui/react-icons";
+import axios from "axios";
 
 type SignUpFormData = {
     name: string;
@@ -21,7 +22,8 @@ export default function SignUpForm() {
 
     const onSubmit = async (data: SignUpFormData) => {
         console.log("Form data:", data);
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        const res = await axios.post("/api/auth/register", data)
+        console.log("Response:", res);
     };
 
     return (
