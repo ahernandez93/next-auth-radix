@@ -1,160 +1,133 @@
-import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { Button, Flex, TextField, Text, Heading } from "@radix-ui/themes";
 import { EnvelopeClosedIcon, LockClosedIcon, PersonIcon, ExclamationTriangleIcon, CheckCircledIcon } from "@radix-ui/react-icons";
 
+type SignUpFormData = {
+    name: string;
+    email: string;
+    password: string;
+};
+
 export default function SignUpForm() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [errors, setErrors] = useState<{name?: string; email?: string; password?: string}>({});
-    
-    const validateEmail = (email: string) => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
+    const { control, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<SignUpFormData>({
+        defaultValues: {
+            name: "",
+            email: "",
+            password: ""
+        }
+    });
+
+    const email = watch("email");
+
+    const onSubmit = async (data: SignUpFormData) => {
+        console.log("Form data:", data);
+        await new Promise(resolve => setTimeout(resolve, 1500));
     };
-    
-    const validatePassword = (password: string) => {
-        return password.length >= 8;
-    };
-    
-    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setEmail(value);
-        
-        if (value && !validateEmail(value)) {
-            setErrors(prev => ({ ...prev, email: "Please enter a valid email address" }));
-        } else {
-            setErrors(prev => ({ ...prev, email: undefined }));
-        }
-    };
-    
-    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setPassword(value);
-        
-        if (value && !validatePassword(value)) {
-            setErrors(prev => ({ ...prev, password: "Password must be at least 8 characters" }));
-        } else {
-            setErrors(prev => ({ ...prev, password: undefined }));
-        }
-    };
-    
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        // Validate form before submission
-        let formErrors = {};
-        
-        if (!name) {
-            formErrors = { ...formErrors, name: "Name is required" };
-        } else {
-            formErrors = { ...formErrors, name: undefined };
-        }
-        
-        if (!email) {
-            formErrors = { ...formErrors, email: "Email is required" };
-        } else if (!validateEmail(email)) {
-            formErrors = { ...formErrors, email: "Please enter a valid email address" };
-        }
-        
-        if (!password) {
-            formErrors = { ...formErrors, password: "Password is required" };
-        } else if (!validatePassword(password)) {
-            formErrors = { ...formErrors, password: "Password must be at least 8 characters" };
-        }
-        
-        if (Object.keys(formErrors).length > 0) {
-            setErrors(formErrors);
-            return;
-        }
-        
-        // Proceed with form submission
-        setIsLoading(true);
-        
-        // Simulate API call
-        setTimeout(() => {
-            setIsLoading(false);
-            // Handle actual form submission here
-        }, 1500);
-    };
-    
+
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
             <Flex direction="column" gap="4" className="py-4">
                 <Heading size="4" className="text-center mb-2">Create Account</Heading>
-                
                 <div className="mb-1">
                     <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
-                    <TextField.Root
-                        id="name"
+                    <Controller
                         name="name"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter your name"
-                        autoFocus
-                        className={`w-full transition-all duration-200 ${errors.name ? 'border-red-500' : ''}`}
-                    >
-                        <TextField.Slot>
-                            <PersonIcon height={16} width={16} />
-                        </TextField.Slot>
-                    </TextField.Root>
-                    
+                        control={control}
+                        rules={{
+                            required: "Name is required",
+                            minLength: {
+                                value: 2,
+                                message: "Name must be at least 2 characters"
+                            }
+                        }}
+                        render={({ field }) => (
+                            <TextField.Root
+                                id="name"
+                                type="text"
+                                placeholder="Enter your name"
+                                autoFocus
+                                className={`w-full transition-all duration-200 ${errors.name ? 'border-red-500' : ''}`}
+                                {...field}
+                            >
+                                <TextField.Slot>
+                                    <PersonIcon height={16} width={16} />
+                                </TextField.Slot>
+                            </TextField.Root>
+                        )}
+                    />
                     {errors.name && (
-                        <Text size="1" className="text-red-500 mt-1">{errors.name}</Text>
+                        <Text size="1" className="text-red-500 mt-1">{errors.name.message}</Text>
                     )}
                 </div>
-                
+
                 <div className="mb-1">
                     <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
-                    <TextField.Root
-                        id="email"
+                    <Controller
                         name="email"
-                        type="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                        placeholder="Enter your email"
-                        className={`w-full transition-all duration-200 ${errors.email ? 'border-red-500' : ''}`}
-                    >
-                        <TextField.Slot>
-                            <EnvelopeClosedIcon height={16} width={16} />
-                        </TextField.Slot>
-                        
-                        {email && (
-                            <TextField.Slot>
-                                {errors.email ? (
-                                    <ExclamationTriangleIcon className="text-red-500" height={16} width={16} />
-                                ) : (
-                                    <CheckCircledIcon className="text-green-500" height={16} width={16} />
+                        control={control}
+                        rules={{
+                            required: "Email is required",
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: "Please enter a valid email address"
+                            }
+                        }}
+                        render={({ field }) => (
+                            <TextField.Root
+                                id="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                className={`w-full transition-all duration-200 ${errors.email ? 'border-red-500' : ''}`}
+                                {...field}
+                            >
+                                <TextField.Slot>
+                                    <EnvelopeClosedIcon height={16} width={16} />
+                                </TextField.Slot>
+                                {email && (
+                                    <TextField.Slot>
+                                        {errors.email ? (
+                                            <ExclamationTriangleIcon className="text-red-500" height={16} width={16} />
+                                        ) : (
+                                            <CheckCircledIcon className="text-green-500" height={16} width={16} />
+                                        )}
+                                    </TextField.Slot>
                                 )}
-                            </TextField.Slot>
+                            </TextField.Root>
                         )}
-                    </TextField.Root>
-                    
+                    />
                     {errors.email && (
-                        <Text size="1" className="text-red-500 mt-1">{errors.email}</Text>
+                        <Text size="1" className="text-red-500 mt-1">{errors.email.message}</Text>
                     )}
                 </div>
 
                 <div className="mb-1">
                     <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
-                    <TextField.Root
-                        id="password"
+                    <Controller
                         name="password"
-                        type="password"
-                        value={password}
-                        onChange={handlePasswordChange}
-                        placeholder="**********"
-                        className={`w-full transition-all duration-200 ${errors.password ? 'border-red-500' : ''}`}
-                    >
-                        <TextField.Slot>
-                            <LockClosedIcon height={16} width={16} />
-                        </TextField.Slot>
-                    </TextField.Root>
-                    
+                        control={control}
+                        rules={{
+                            required: "Password is required",
+                            minLength: {
+                                value: 8,
+                                message: "Password must be at least 8 characters"
+                            }
+                        }}
+                        render={({ field }) => (
+                            <TextField.Root
+                                id="password"
+                                type="password"
+                                placeholder="**********"
+                                className={`w-full transition-all duration-200 ${errors.password ? 'border-red-500' : ''}`}
+                                {...field}
+                            >
+                                <TextField.Slot>
+                                    <LockClosedIcon height={16} width={16} />
+                                </TextField.Slot>
+                            </TextField.Root>
+                        )}
+                    />
                     {errors.password && (
-                        <Text size="1" className="text-red-500 mt-1">{errors.password}</Text>
+                        <Text size="1" className="text-red-500 mt-1">{errors.password.message}</Text>
                     )}
                 </div>
 
@@ -163,9 +136,9 @@ export default function SignUpForm() {
                     variant="solid"
                     color="blue"
                     className="w-full mt-4 transition-all duration-200 hover:brightness-110 hover:shadow-md"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                 >
-                    {isLoading ? (
+                    {isSubmitting ? (
                         <Flex align="center" gap="2" justify="center">
                             <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -177,7 +150,7 @@ export default function SignUpForm() {
                         "Sign Up"
                     )}
                 </Button>
-                
+
                 <div className="mt-6">
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
@@ -187,7 +160,6 @@ export default function SignUpForm() {
                             <span className="px-2 bg-white text-gray-500">Or continue with</span>
                         </div>
                     </div>
-                    
                     <div className="mt-6 grid grid-cols-3 gap-3">
                         <Button variant="outline" className="w-full">
                             <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
