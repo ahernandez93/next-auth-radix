@@ -21,7 +21,6 @@ export default function SignUpForm() {
     const email = watch("email");
 
     const onSubmit = async (data: SignUpFormData) => {
-        console.log("Form data:", data);
         const res = await axios.post("/api/auth/register", data)
         console.log("Response:", res);
     };

@@ -1,6 +1,8 @@
 import { useForm, Controller } from "react-hook-form";
 import { Button, Flex, TextField, Text, Link, Checkbox, Heading } from "@radix-ui/themes";
 import { EnvelopeClosedIcon, LockClosedIcon, ExclamationTriangleIcon, CheckCircledIcon } from "@radix-ui/react-icons";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type SignInFormData = {
     email: string;
@@ -17,11 +19,21 @@ export default function SignInForm() {
         }
     });
 
+    const router = useRouter();
     const email = watch("email");
 
     const onSubmit = async (data: SignInFormData) => {
         console.log("Form data:", data);
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        const res = await signIn("credentials", {
+            redirect: false,
+            email: data.email,
+            password: data.password
+        });
+
+        if (!res?.ok) {
+            console.log("Response:", res);
+        }
+        router.push("/dashboard");
     };
 
     return (
