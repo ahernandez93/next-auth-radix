@@ -22,7 +22,7 @@ function ThemeToggle() {
 
 function ClientLayoutContent({
     children,
-    fonts
+    
 }: {
     children: ReactNode;
     fonts: {
