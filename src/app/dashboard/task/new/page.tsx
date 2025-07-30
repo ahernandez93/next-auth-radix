@@ -1,6 +1,7 @@
 'use client';
 import { Container, TextField, TextArea, Flex, Button, Card, Heading } from '@radix-ui/themes'
 import { useForm, Controller } from 'react-hook-form';
+import axios from 'axios';
 
 export default function NewTaskPage() {
     const { control, handleSubmit } = useForm({
@@ -10,8 +11,10 @@ export default function NewTaskPage() {
         }
     });
 
-    const onSubmit = handleSubmit(data => {
+    const onSubmit = handleSubmit(async data => {
         console.log(data);
+        const res = await axios.post('/api/projects', data);
+        console.log(res);
     });
 
     return (

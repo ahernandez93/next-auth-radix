@@ -26,7 +26,6 @@ export default function SignUpForm() {
 
     const onSubmit = async (data: SignUpFormData) => {
         const res = await axios.post("/api/auth/register", data)
-        console.log("Response:", res);
 
         if (res.status === 201) {
             const result = await signIn("credentials", {
@@ -36,7 +35,6 @@ export default function SignUpForm() {
             })
 
             if (!result?.ok) {
-                console.log(result?.error);
                 return;
             }
             router.push("/dashboard");

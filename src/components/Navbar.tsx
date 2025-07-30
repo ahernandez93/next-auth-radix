@@ -4,7 +4,6 @@ import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
     const { data: session } = useSession();
-    console.log(session);
     return (
         <nav className="bg-zinc-950 py-4">
             <Container>
