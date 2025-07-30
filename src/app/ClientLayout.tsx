@@ -5,6 +5,8 @@ import { Theme } from "@radix-ui/themes";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { Button } from "@radix-ui/themes";
+import Navbar from "@/components/Navbar";
+import { SessionProvider } from "next-auth/react";
 
 function ThemeToggle() {
     const { isDarkMode, toggleTheme } = useTheme();
@@ -42,6 +44,7 @@ function ClientLayoutContent({
     return (
         <Theme appearance={isDarkMode ? "dark" : "light"}>
             <ThemeToggle />
+            <Navbar />
             {children}
         </Theme>
     );
@@ -59,7 +62,9 @@ export default function ClientLayout({
 }) {
     return (
         <ThemeProvider>
-            <ClientLayoutContent fonts={fonts}>{children}</ClientLayoutContent>
+            <SessionProvider>
+                <ClientLayoutContent fonts={fonts}>{children}</ClientLayoutContent>
+            </SessionProvider>
         </ThemeProvider>
     );
 }

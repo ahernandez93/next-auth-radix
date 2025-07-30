@@ -2,6 +2,8 @@ import { useForm, Controller } from "react-hook-form";
 import { Button, Flex, TextField, Text, Heading } from "@radix-ui/themes";
 import { EnvelopeClosedIcon, LockClosedIcon, PersonIcon, ExclamationTriangleIcon, CheckCircledIcon } from "@radix-ui/react-icons";
 import axios from "axios";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type SignUpFormData = {
     name: string;
@@ -20,9 +22,25 @@ export default function SignUpForm() {
 
     const email = watch("email");
 
+    const router = useRouter();
+
     const onSubmit = async (data: SignUpFormData) => {
         const res = await axios.post("/api/auth/register", data)
         console.log("Response:", res);
+
+        if (res.status === 201) {
+            const result = await signIn("credentials", {
+                email: res.data.email,
+                password: data.password,
+                redirect: false
+            })
+
+            if (!result?.ok) {
+                console.log(result?.error);
+                return;
+            }
+            router.push("/dashboard");
+        }
     };
 
     return (
