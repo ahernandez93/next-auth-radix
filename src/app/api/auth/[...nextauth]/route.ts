@@ -46,8 +46,6 @@ export const authOption: AuthOptions = {
                 session.user.id = token.sub as string;
             }
 
-            console.log(session);
-            console.log(token);
             return session;
         },
     },

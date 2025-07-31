@@ -2,6 +2,7 @@
 import { Container, TextField, TextArea, Flex, Button, Card, Heading } from '@radix-ui/themes'
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 export default function NewTaskPage() {
     const { control, handleSubmit } = useForm({
@@ -10,10 +11,15 @@ export default function NewTaskPage() {
             description: ''
         }
     });
+    const router = useRouter();
 
     const onSubmit = handleSubmit(async data => {
         console.log(data);
         const res = await axios.post('/api/projects', data);
+        if (res.status === 201) {
+            router.push('/dashboard');
+            router.refresh();
+        }
         console.log(res);
     });
 
