@@ -7,13 +7,14 @@ import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { Button } from "@radix-ui/themes";
 import Navbar from "@/components/Navbar";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "sonner";
 
-function ThemeToggle() {
+export function ThemeToggle() {
     const { isDarkMode, toggleTheme } = useTheme();
 
     return (
-        <div className="fixed top-4 right-4 z-50">
-            <Button variant="ghost" onClick={toggleTheme}>
+        <div className="flex items-center">
+            <Button variant="ghost" className="ml-2 hidden sm:flex" onClick={toggleTheme}>
                 {isDarkMode ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
             </Button>
         </div>
@@ -22,7 +23,7 @@ function ThemeToggle() {
 
 function ClientLayoutContent({
     children,
-    
+
 }: {
     children: ReactNode;
     fonts: {
@@ -43,7 +44,6 @@ function ClientLayoutContent({
 
     return (
         <Theme appearance={isDarkMode ? "dark" : "light"}>
-            <ThemeToggle />
             <Navbar />
             {children}
         </Theme>
@@ -63,7 +63,10 @@ export default function ClientLayout({
     return (
         <ThemeProvider>
             <SessionProvider>
-                <ClientLayoutContent fonts={fonts}>{children}</ClientLayoutContent>
+                <ClientLayoutContent fonts={fonts}>
+                    {children}
+                    <Toaster />
+                </ClientLayoutContent>
             </SessionProvider>
         </ThemeProvider>
     );

@@ -4,32 +4,55 @@ import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
 import { useRouter, useParams } from 'next/navigation';
 import { TrashIcon } from '@radix-ui/react-icons';
+import { toast } from 'sonner';
+import { useEffect } from 'react';
 
 export default function NewTaskPage() {
-    const { control, handleSubmit } = useForm({
+    const { control, handleSubmit, setValue } = useForm({
         defaultValues: {
             title: '',
             description: ''
         }
     });
+
     const router = useRouter();
-    const params = useParams();
+    const params = useParams() as { id: string };
 
     const onSubmit = handleSubmit(async data => {
         if (!params.id) {
             const res = await axios.post('/api/projects', data);
             if (res.status === 201) {
-                router.push('/dashboard');
-                router.refresh();
+                toast.success('Project created successfully');
             }
+            router.push('/dashboard');
+            router.refresh();
         } else {
             const res = await axios.put(`/api/projects/${params.id}`, data);
             if (res.status === 200) {
-                router.push('/dashboard');
-                router.refresh();
+                toast.success('Project updated successfully');
             }
+            router.push('/dashboard');
+            router.refresh();
         }
     });
+
+    const handleDelete = async (projectid: string) => {
+        const res = await axios.delete(`/api/projects/${projectid}`);
+        if (res.status === 200) {
+            toast.success('Project deleted successfully');
+        }
+        router.push('/dashboard');
+        router.refresh();
+    }
+
+    useEffect(() => {
+        if (params.id) {
+            axios.get(`/api/projects/${params.id}`).then(res => {
+                setValue('title', res.data.title);
+                setValue('description', res.data.description);
+            });
+        }
+    }, [params.id, setValue]);
 
     return (
         <Container size="2" height="100%" className="p-3 md:p-0">
@@ -57,7 +80,7 @@ export default function NewTaskPage() {
                     </form>
                     <div className="flex justify-end my-4">
                         {params.id && (
-                            <Button color="red" onClick={() => router.push('/dashboard')}>
+                            <Button color="red" onClick={() => handleDelete(params.id)}>
                                 <TrashIcon />
                                 Delete Project
                             </Button>

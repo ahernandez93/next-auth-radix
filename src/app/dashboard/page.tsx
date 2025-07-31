@@ -1,4 +1,4 @@
-import { Container, Grid } from '@radix-ui/themes'
+import { Container } from '@radix-ui/themes'
 import HeaderDashboard from '@/components/dashboard/HeaderDashboard'
 import { prisma } from '@/libs/prisma'
 import { authOption } from '@/app/api/auth/[...nextauth]/route'
@@ -21,13 +21,13 @@ export default async function DashboardPage() {
     const projects = await loadProjects();
 
     return (
-        <Container className="mt-10">
+        <Container className="mt-10 px-10 md:px-0">
             <HeaderDashboard />
-            <Grid columns="3" gap="3" className="mt-10">
+            <div className="grid md:grid-cols-3 gap-4 mt-10">
                 {projects.map(project => (
                     <ProjectCard key={project.id} project={project} />
                 ))}
-            </Grid>
+            </div>
         </Container>
     )
 }

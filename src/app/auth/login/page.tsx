@@ -9,22 +9,21 @@ import { useTheme } from "@/context/ThemeContext";
 
 export default function LoginPage() {
     const { isDarkMode } = useTheme();
-    
+
     return (
         <>
             <Container size="1" height="100%" className="p-3 md:p-0">
-                <Flex className="h-screen w-full items-center">
+                <Flex className="h-[calc(100vh-5.5rem)] w-full items-center">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                         className="w-full"
                     >
-                        <Card className={`w-full p-7 shadow-lg transition-colors duration-300 ${
-                            isDarkMode
+                        <Card className={`w-full p-7 shadow-lg transition-colors duration-300 ${isDarkMode
                                 ? 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700'
                                 : 'bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100'
-                        }`}>
+                            }`}>
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -43,9 +42,9 @@ export default function LoginPage() {
                                     </Text>
                                 </Flex>
                             </motion.div>
-                            
+
                             <SignInForm />
-                            
+
                             <Flex justify="between" my="4">
                                 <Text>
                                     Don&apos;t have an account?

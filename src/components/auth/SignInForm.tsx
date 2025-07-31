@@ -23,7 +23,6 @@ export default function SignInForm() {
     const email = watch("email");
 
     const onSubmit = async (data: SignInFormData) => {
-        console.log("Form data:", data);
         const res = await signIn("credentials", {
             redirect: false,
             email: data.email,

@@ -13,7 +13,7 @@ export default function RegisterPage() {
     return (
         <>
             <Container size="1" height="100%" className="p-3 md:p-0">
-                <Flex className="h-screen w-full items-center">
+                <Flex className="h-[calc(100vh-5.5rem)] w-full items-center">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
