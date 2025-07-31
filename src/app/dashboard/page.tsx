@@ -1,7 +1,7 @@
 import { Container } from '@radix-ui/themes'
 import HeaderDashboard from '@/components/dashboard/HeaderDashboard'
 import { prisma } from '@/libs/prisma'
-import { authOption } from '@/app/api/auth/[...nextauth]/route'
+import { authOption } from '@/libs/authOptions'
 import { getServerSession } from 'next-auth/next'
 import ProjectCard from '@/components/projects/ProjectCard'
 

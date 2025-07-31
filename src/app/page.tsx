@@ -2,7 +2,7 @@ import { Container } from "@radix-ui/themes"
 import { Metadata } from "next"
 import Link from "next/link"
 import { getServerSession } from "next-auth/next"
-import { authOption } from "@/app/api/auth/[...nextauth]/route"
+import { authOption } from "@/libs/authOptions"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
