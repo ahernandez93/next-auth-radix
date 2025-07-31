@@ -13,6 +13,7 @@ export const authOption: AuthOptions = {
                 password: { label: "Password", type: "password", placeholder: "******" }
             },
             async authorize(credentials: Record<"email" | "password", string> | undefined, _req: Pick<RequestInternal, "query" | "body" | "headers" | "method">) {
+                void _req;
                 if (!credentials) {
                     throw new Error("Missing credentials");
                 }
